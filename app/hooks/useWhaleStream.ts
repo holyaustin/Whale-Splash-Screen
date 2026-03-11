@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { WhaleTransaction } from '@/app/lib/types';
 import { getHistoricalWhales, startMockWhaleStream } from '@/app/lib/mockWhaleService';
 
-export function useWhaleStream(threshold?: number) {  // Add threshold parameter
+export function useWhaleStream(threshold?: number) {
   const [currentWhale, setCurrentWhale] = useState<WhaleTransaction | null>(null);
   const [recentWhales, setRecentWhales] = useState<WhaleTransaction[]>([]);
   const [isConnected, setIsConnected] = useState(true);
@@ -26,12 +26,13 @@ export function useWhaleStream(threshold?: number) {  // Add threshold parameter
       setCurrentWhale(whale);
       setRecentWhales(prev => [whale, ...prev].slice(0, 50));
       
-      // Clear current whale after animation
+      // Auto-clear after 5 seconds (this will be overridden by manual close)
       setTimeout(() => setCurrentWhale(null), 5000);
     });
     
     return cleanup;
-  }, [threshold]); // Add threshold to dependencies
+  }, [threshold]);
 
-  return { currentWhale, recentWhales, isConnected };
+  // Return setCurrentWhale so components can clear it manually
+  return { currentWhale, setCurrentWhale, recentWhales, isConnected };
 }

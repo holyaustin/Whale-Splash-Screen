@@ -6,7 +6,7 @@ import { WhaleTransaction } from '@/app/lib/types';
 interface Props {
   whale: WhaleTransaction;
   intensity: 'low' | 'medium' | 'high';
-  onComplete?: () => void;  // This will be called when animation finishes
+  onComplete?: () => void;
 }
 
 export default function SplashAnimation({ whale, intensity, onComplete }: Props) {
@@ -15,7 +15,7 @@ export default function SplashAnimation({ whale, intensity, onComplete }: Props)
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-      onComplete?.();  // Call the callback when done
+      onComplete?.();
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -49,15 +49,15 @@ export default function SplashAnimation({ whale, intensity, onComplete }: Props)
       
       {/* Whale info */}
       <div className="relative z-10 text-center text-white">
-        <h1 className="text-6xl font-bold mb-4 animate-pulse">
+        <h1 className="text-4xl sm:text-6xl font-bold mb-4 animate-pulse">
           🐋 WHALE SPLASH!
         </h1>
-        <div className="text-2xl bg-black/50 backdrop-blur p-8 rounded-2xl">
-          <p className="text-4xl font-bold text-yellow-400">
+        <div className="text-xl sm:text-2xl bg-black/50 backdrop-blur p-6 sm:p-8 rounded-2xl">
+          <p className="text-3xl sm:text-4xl font-bold text-yellow-400">
             ${whale.usdValue.toLocaleString()}
           </p>
           <p className="mt-2">{whale.token}</p>
-          <p className="text-sm mt-4 opacity-75 font-mono">
+          <p className="text-xs sm:text-sm mt-4 opacity-75 font-mono break-all">
             {whale.from.slice(0, 6)}...{whale.from.slice(-4)} → {whale.to.slice(0, 6)}...{whale.to.slice(-4)}
           </p>
         </div>
