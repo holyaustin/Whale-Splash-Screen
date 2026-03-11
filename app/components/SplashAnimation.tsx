@@ -6,7 +6,7 @@ import { WhaleTransaction } from '@/app/lib/types';
 interface Props {
   whale: WhaleTransaction;
   intensity: 'low' | 'medium' | 'high';
-  onComplete?: () => void;
+  onComplete?: () => void;  // This will be called when animation finishes
 }
 
 export default function SplashAnimation({ whale, intensity, onComplete }: Props) {
@@ -15,19 +15,13 @@ export default function SplashAnimation({ whale, intensity, onComplete }: Props)
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-      onComplete?.();
+      onComplete?.();  // Call the callback when done
     }, 3000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   if (!visible) return null;
-
-  const splashSize = {
-    low: 'scale-110',
-    medium: 'scale-150',
-    high: 'scale-200',
-  }[intensity];
 
   // Determine splash intensity based on value
   const getSplashClass = () => {
@@ -54,10 +48,7 @@ export default function SplashAnimation({ whale, intensity, onComplete }: Props)
       </div>
       
       {/* Whale info */}
-      <div className={`
-        relative z-10 text-center text-white
-        transform transition-all duration-300 ${splashSize}
-      `}>
+      <div className="relative z-10 text-center text-white">
         <h1 className="text-6xl font-bold mb-4 animate-pulse">
           🐋 WHALE SPLASH!
         </h1>

@@ -10,10 +10,13 @@ import ThresholdSettings from './ThresholdSettings';
 
 export default function WhaleSplash() {
   const [threshold, setThreshold] = useLocalStorage('whale-threshold', 50000);
-  const [intensity] = useLocalStorage<'low' | 'medium' | 'high'>('animation-intensity', 'high');
-  const [currentWhale, setCurrentWhale] = useState(null);
+  const [intensity, setIntensity] = useLocalStorage<'low' | 'medium' | 'high'>('animation-intensity', 'high');
   
-  const { recentWhales, isConnected } = useWhaleStream(threshold);
+  // Use the hook - currentWhale is managed by the hook
+  const { currentWhale, recentWhales, isConnected } = useWhaleStream(threshold);
+
+  // We don't need setCurrentWhale here because the hook handles clearing it
+  // after 5 seconds automatically. The onComplete is optional.
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-950 to-black text-white">
@@ -22,7 +25,7 @@ export default function WhaleSplash() {
         <SplashAnimation
           whale={currentWhale}
           intensity={intensity}
-          onComplete={() => setCurrentWhale(null)}
+          // onComplete is optional - the hook already clears after 5 seconds
         />
       )}
       
@@ -61,17 +64,6 @@ export default function WhaleSplash() {
           </div>
         </div>
       </main>
-      
-      {/* Add custom animations to global CSS */}
-      <style jsx global>{`
-        @keyframes splash {
-          0% { transform: scale(0); opacity: 1; }
-          100% { transform: scale(4); opacity: 0; }
-        }
-        @keyframes ping {
-          75%, 100% { transform: scale(2); opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 }

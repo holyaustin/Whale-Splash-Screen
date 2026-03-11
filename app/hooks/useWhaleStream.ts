@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { WhaleTransaction } from '@/app/lib/types';
 import { getHistoricalWhales, startMockWhaleStream } from '@/app/lib/mockWhaleService';
 
-export function useWhaleStream() {
+export function useWhaleStream(threshold?: number) {  // Add threshold parameter
   const [currentWhale, setCurrentWhale] = useState<WhaleTransaction | null>(null);
   const [recentWhales, setRecentWhales] = useState<WhaleTransaction[]>([]);
   const [isConnected, setIsConnected] = useState(true);
@@ -17,6 +17,11 @@ export function useWhaleStream() {
     
     // Start real-time stream
     const cleanup = startMockWhaleStream((whale) => {
+      // Filter by threshold if provided
+      if (threshold && whale.usdValue < threshold) {
+        return; // Skip whales below threshold
+      }
+      
       console.log('💦 New whale splash!', whale.usdValue);
       setCurrentWhale(whale);
       setRecentWhales(prev => [whale, ...prev].slice(0, 50));
@@ -26,7 +31,7 @@ export function useWhaleStream() {
     });
     
     return cleanup;
-  }, []);
+  }, [threshold]); // Add threshold to dependencies
 
   return { currentWhale, recentWhales, isConnected };
 }
