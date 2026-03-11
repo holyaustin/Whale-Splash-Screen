@@ -1,12 +1,12 @@
 export interface WhaleTransaction {
-  id: string;
-  hash: string;
-  from: string;
-  to: string;
-  value: string;      // In dollars
-  token: string;
-  timestamp: number;
-  usdValue: number;
+  id: string;           // Same as hash for uniqueness
+  hash: string;         // Transaction hash
+  from: string;         // Sender address
+  to: string;           // Receiver address
+  value: string;        // Raw value in wei
+  token: string;        // Token symbol
+  timestamp: number;    // Unix timestamp
+  usdValue: number;     // USD value
 }
 
 export interface WhaleAlert {
@@ -15,8 +15,8 @@ export interface WhaleAlert {
 }
 
 export interface ThresholdSettings {
-  minValue: number;        // Minimum USD to trigger
+  minValue: number;
   soundEnabled: boolean;
   animationIntensity: 'low' | 'medium' | 'high';
-  selectedTokens: string[]; // Empty = all tokens
+  selectedTokens: string[];
 }

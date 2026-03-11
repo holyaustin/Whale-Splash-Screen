@@ -1,6 +1,6 @@
 'use client';
 
-import { WhaleTransaction } from '@/lib/types';
+import { WhaleTransaction } from '@/app/lib/types';
 import { useEffect, useState } from 'react';
 
 interface Props {

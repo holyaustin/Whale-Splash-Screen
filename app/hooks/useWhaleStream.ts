@@ -1,38 +1,32 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { subscribeToWhales } from '@/app/lib/sdsStreamClient';
+import { useEffect, useState } from 'react';
 import { WhaleTransaction } from '@/app/lib/types';
+import { getHistoricalWhales, startMockWhaleStream } from '@/app/lib/mockWhaleService';
 
-export function useWhaleStream(threshold: number) {
+export function useWhaleStream() {
   const [currentWhale, setCurrentWhale] = useState<WhaleTransaction | null>(null);
   const [recentWhales, setRecentWhales] = useState<WhaleTransaction[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(true);
 
   useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-
-    const connect = async () => {
-      setIsConnected(true);
+    // Load historical data
+    const historical = getHistoricalWhales(20);
+    console.log('📜 Historical whales loaded:', historical.length);
+    setRecentWhales(historical);
+    
+    // Start real-time stream
+    const cleanup = startMockWhaleStream((whale) => {
+      console.log('💦 New whale splash!', whale.usdValue);
+      setCurrentWhale(whale);
+      setRecentWhales(prev => [whale, ...prev].slice(0, 50));
       
-      unsubscribe = await subscribeToWhales(threshold, (whale) => {
-        setCurrentWhale(whale);
-        setRecentWhales(prev => [whale, ...prev].slice(0, 20));
-        
-        // Auto-clear current whale after 5 seconds
-        setTimeout(() => {
-          setCurrentWhale(null);
-        }, 5000);
-      });
-    };
-
-    connect();
-
-    return () => {
-      setIsConnected(false);
-      if (unsubscribe) unsubscribe();
-    };
-  }, [threshold]);
+      // Clear current whale after animation
+      setTimeout(() => setCurrentWhale(null), 5000);
+    });
+    
+    return cleanup;
+  }, []);
 
   return { currentWhale, recentWhales, isConnected };
 }
